@@ -33,5 +33,5 @@ Feel free to check the issues page.
 
 
 🙌 Acknowledgements
-WebSocket API Documentation — MDN Web Docs
+WebSocket API Documentation — [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
 
