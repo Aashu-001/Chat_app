@@ -1,0 +1,98 @@
+after the connection get establish:
+     change: package.json->"dev":"tsc -b && node./dist/index.js"
+
+
+    HOW WE WILL RECEIVE:
+    socket.send(message.toString()+":send from the server");
+       **send as it to the same client is it receive from the  client   
+
+    MAINTAIN THE ARRAY OF ALL :
+    let allSocket:WebSocket[] =[];
+       **we will use the array to store all the client from whom msg come 
+       **WebSocket[] -> here it the type of the socket that we receive i.e string ,char,int etc.
+                        but only difference si that we will get it from the ws:
+
+
+    HOW TO SEND :    
+    for(let i=0; i<allSockets.length; i++){
+            const s= allSockets[i];
+             s.send(message.toString()+":send from the server");
+            }
+     **here ek ek krke sabko bhej denge 
+
+     **disconnect the dead client(disconnected) from he allSocket
+    socket.on("diconnected",()=>{
+        allSockets = allSockets.filter(x => x!=socket);
+    }) 
+
+MULTI USER CONNECTED
+ALL CAN SEND MSG
+ALL WILL RECEIVE THE SAME
+:code
+
+***
+wss.on("connection",(socket)=>{
+      allSockets.push(socket);
+
+    userCount = userCount+1;
+    console.log("user connected #"+userCount);
+    
+    //here messege get read by the server
+    socket.on("message",(message)=>{
+        console.log("message received: "+ message.toString() );
+
+       
+        allSockets.forEach(s=>{
+           s.send(message.toString()+ ": sent from the server")
+        })
+             
+     })
+    
+    socket.on("diconnected",()=>{
+        allSockets = allSockets.filter(x => x!=socket);
+    })
+           
+})
+***
+
+
+
+********************************************************************
+    WAY TO STORE THE CILENT AND ALLLOCTED ROOM
+     1) BY USING MAP:
+          let allSockets =
+          {
+            "room1": [socket1,socket2],
+            "room2": [socket],
+            "room3": [socket3,socket4]  
+         }
+
+      2) BY USING CLASS AND OBJECT:
+         inteface User{
+            socket : WebSocket;
+            room :String;
+         }   
+         let allSockets:User[]= [
+            {socket:"socket1",room:"room1"},
+            {socket:"socket2",room:"room2"},
+            {socket:"socket3",room:"room1"}
+         ];
+
+SEPRATE THE ROOM: 
+
+MSG GET ACCESSED BY ONE THE MEMBER OF SAME ROOM
+    *when we get the msg we need to check wherter the one wants to join the room or send the chat 
+    *join a room:
+       {
+        "type":"join"
+        "payload":{
+            "roomID":"123"
+        }
+       }
+    *send the msg:
+     {
+        "type":"msg",
+        "payload":{
+         "message":"hi there"
+        }
+     }   
